@@ -1,31 +1,30 @@
-var express = require('express');
-var bodyParser = require('body-parser');
+const express = require('express');
+const axios = require('axios');
+const bodyParser = require('body-parser');
 
-var app = express();
+const app = express();
+app.use(bodyParser.json());
 
-var port = process.env.PORT || 3000,
-    ip   = process.env.IP   || '0.0.0.0';
+const SPRING_BOOT_URL = 'http://localhost:8081'; // Change this according to your Spring Boot server URL
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.listen(port, ip, function () {
-  console.log('Echo API is listening on port ' + port );
+// Endpoint to send data to Spring Boot
+app.post('/dataReceive', async (req, res) => {
+  try {
+    const dataToSend = {
+        key1: 'value1',
+        key2: 'value2',
+    };
+    // Send data to Spring Boot
+    const response = await axios.post(`${SPRING_BOOT_URL}/dataReceive`, dataToSend);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error sending data to Spring Boot:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
-var reqData = function(req) {
-  const params = ['method', 'hostname', 'path', 'query', 'headers', 'body']
-  return params.reduce(
-    (accumulator, currentValue) => { accumulator[currentValue] = req[currentValue]; return accumulator},
-    {}
-  );
-};
-
-app.all('*', function (req, res) {
-  res.set('Content-Type', 'application/json');
-  res.set("Access-Control-Allow-Origin", "*");
-  var response = reqData(req);
-  res.status(200).send(JSON.stringify(response,null,2));
+// Start the Express server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
-
-module.exports = app;
