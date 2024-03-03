@@ -21,7 +21,7 @@ app.post('/send-data', (req, res) => {
   // Send the data to Spring Boot server
   fetch(url, {
     method: 'POST',
-    body: JSON.stringify(dataToSend),
+    body: JSON.stringify(req.body),
     headers: { 'Content-Type': 'application/json' },
   })
   .then(response => {
