@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class InfosysController{
-	 @PostMapping("/dataReceive")
+	 @PostMapping("/send-data")
 	    public String receiveDataFromNode(@RequestBody Map<String, String> data) {
-		 System.out.println("Received data from Node.js:");
+		 System.out.println("Received");
 	        System.out.println(data);
 	        
 	        // Return a response (optional)
